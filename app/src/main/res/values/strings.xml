@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">BaseFramework</string>
+
+    <string name="navigation_drawer_open">打开</string>
+    <string name="navigation_drawer_close">关闭</string>
+
+    <string name="action_settings">Settings</string>
+
+    <!-- fragment -->
+    <!--listviewFragment-->
+    <string name="listview_text">我是listview</string>
+</resources>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--menu-->
+    <string name="menu_network">network demo</string>
+    <string name="menu_listivew">listview demo</string>
+    <string name="menu_recyclerview">recyclerView demo</string>
+    <string name="menu_eventbus">eventBus Demo</string>
+
+</resources>
