@@ -1,70 +1,108 @@
 package com.cml.common.baseframework.helper;
 
-import android.widget.BaseAdapter;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.cml.common.baseframework.model.PageModel;
+import com.activeandroid.Model;
+import com.cml.common.baseframework.helper.model.PageModel;
+import com.cml.common.baseframework.util.AppUtil;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.socks.library.KLog;
 
 import java.util.List;
-import java.util.Map;
 
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Action1;
-import rx.subjects.BehaviorSubject;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by cmlBeliever on 2015/11/16.
- * 下拉刷新插件帮助类
+ * 下拉刷新插件帮助类，作为demo工程时，实现下拉往db插入pageSize条数据，上拉加载db数据，以此来模拟网络数据请求与本地加载
  */
 public class PullRefreshHelper {
-    private PullToRefreshListView listView;
-    private BaseAdapter adapter;
-    private PageModel pageModel;
-    private BehaviorSubject behaviorSubject = BehaviorSubject.create();
 
+    private static final String TAG = PullRefreshHelper.class.getSimpleName();
+
+    private PullToRefreshListView listView;
+    private ArrayAdapter<? extends Model> adapter;
+    private PageModel pageModel;
+    private Observable.Transformer<Object, Object> transformer;//绑定请求的生命周期
+
+    /**
+     * 用户下拉与上拉事件监听，完成数据加载与导入
+     */
     private PullToRefreshBase.OnRefreshListener2 onRefreshListener = new PullToRefreshBase.OnRefreshListener2<ListView>() {
         @Override
-        public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
-
-            //TODO
-            try {
-                Thread.sleep(2000);
-                pageModel.nextPage();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            adapter.notifyDataSetChanged();
-            refreshView.onRefreshComplete();
+        public void onPullDownToRefresh(final PullToRefreshBase<ListView> refreshView) {
+            //插入db数据结束后关闭加载效果
+            Observable<Integer> serverDataObserver = pageModel.insertPageData();
+            serverDataObserver.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).doOnCompleted(new Action0() {
+                @Override
+                public void call() {
+                    //服务器返回的数据处理完毕后，
+                    //1、清空数据，重新加载本地数据
+                    // 加载数据、
+                    pageModel.reset();
+                    adapter.clear();
+                    loadLocalData();
+                }
+            }).compose(transformer).subscribe();
         }
 
         @Override
         public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
-            //TODO 加载更多数据
-            pageModel.reset();
-            //TODO
-            try {
-
-                pageModel.nextPage();
-                adapter.notifyDataSetChanged();
-
-                Thread.sleep(2000);
-                refreshView.onRefreshComplete();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
+            // 加载更多数据
+            pageModel.nextPage();
+            loadLocalData();
         }
     };
 
-    public PullRefreshHelper(PullToRefreshListView listView, BaseAdapter adapter, PageModel pageModel) {
+    /**
+     * 加载本地数据
+     */
+    private void loadLocalData() {
+        pageModel.getPageData().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).doOnNext(new Action1<List<? extends Model>>() {
+            @Override
+            public void call(List models) {
+                KLog.d(TAG, "---doOnSubscribe--->获取本地数据长度，数据长度：" + (models == null ? 0 : models.size()) + ",threadID:" + Thread.currentThread().getId());
+                if (null != models) {
+                    adapter.addAll(models);
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        }).doOnCompleted(new Action0() {
+            @Override
+            public void call() {
+                refreshCompleted();
+                //没有更多数据了
+                if (adapter.getCount() % pageModel.pageSize != 0) {
+                    listView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+                } else {
+                    listView.setMode(PullToRefreshBase.Mode.BOTH);
+                }
+            }
+        }).compose(transformer).subscribe();
+    }
+
+    public PullRefreshHelper(PullToRefreshListView listView, ArrayAdapter adapter, PageModel pageModel, Observable.Transformer<Object, Object> transformer) {
         this.listView = listView;
         this.adapter = adapter;
         this.pageModel = pageModel;
+        this.transformer = transformer;
     }
 
+    /**
+     * 进行初始化配置
+     *
+     * @param mode
+     */
     public void setUp(PullToRefreshBase.Mode mode) {
+
         listView.setOnRefreshListener(onRefreshListener);
+
         if (null == mode) {
             listView.setMode(PullToRefreshBase.Mode.BOTH);
         } else {
@@ -72,14 +110,22 @@ public class PullRefreshHelper {
         }
 
         listView.setAdapter(adapter);
-        listView.setRefreshing();
 
-        //订阅数据加载完成事件
-        behaviorSubject.subscribe(new Action1<List<Map<String, Object>>>() {
-            @Override
-            public void call(List<Map<String, Object>> maps) {
-                adapter.notifyDataSetChanged();
-            }
-        });
+        //先加载本地缓存数据
+        loadLocalData();
+
+        //网络正常，从服务器获取数据
+        if (AppUtil.hasNetwork()) {
+            listView.setRefreshing();
+        }
+    }
+
+    /**
+     * 结束加载效果
+     */
+    private void refreshCompleted() {
+        if (listView.isRefreshing()) {
+            listView.onRefreshComplete();
+        }
     }
 }

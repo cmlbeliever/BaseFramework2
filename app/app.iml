@@ -102,6 +102,7 @@
     <orderEntry type="library" exported="" name="butterknife-7.0.1" level="project" />
     <orderEntry type="library" exported="" name="rxlifecycle-0.3.0" level="project" />
     <orderEntry type="library" exported="" name="gson-2.3.1" level="project" />
+    <orderEntry type="library" exported="" name="activeandroid-3.1.0-SNAPSHOT" level="project" />
     <orderEntry type="library" exported="" name="rxandroid-1.0.1" level="project" />
     <orderEntry type="library" exported="" name="rxbinding-support-v4-0.3.0" level="project" />
     <orderEntry type="library" exported="" name="retrofit-1.9.0" level="project" />
