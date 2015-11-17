@@ -4,10 +4,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.cml.common.baseframework.activity.BaseActivity;
 import com.trello.rxlifecycle.components.support.RxFragment;
 
 import butterknife.ButterKnife;
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by cmlBeliever on 2015/11/16.
@@ -16,6 +19,22 @@ import butterknife.ButterKnife;
 public abstract class BaseFragment extends RxFragment {
 
     public BaseFragment() {
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroy();
+    }
+
+    public void onEvent(BaseActivity.FloatClickEvent clickEvent) {
+        Toast.makeText(getContext(), "点击了floatbutton", Toast.LENGTH_LONG).show();
     }
 
     @Override

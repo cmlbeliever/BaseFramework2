@@ -6,6 +6,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
 import com.cml.common.baseframework.R;
+import com.cml.common.baseframework.activity.BaseActivity;
 import com.cml.common.baseframework.activity.UserInfoActivity;
 import com.cml.common.baseframework.db.model.UserModel;
 import com.cml.common.baseframework.fragment.adapter.UserAdapter;
@@ -51,9 +52,20 @@ public class ListViewFragment extends BaseFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 UserModel userModel = (UserModel) parent.getItemAtPosition(position);
-                UserInfoActivity.startActivity(getContext(),userModel.getId());
+                UserInfoActivity.startActivity(getContext(), userModel.getId());
             }
         });
     }
 
+    /**
+     * 获取FloatButton点击事件，完成页面自动下拉功能
+     *
+     * @param clickEvent
+     */
+    @Override
+    public void onEvent(BaseActivity.FloatClickEvent clickEvent) {
+        if (!listview.isRefreshing()) {
+            listview.setRefreshing();
+        }
+    }
 }

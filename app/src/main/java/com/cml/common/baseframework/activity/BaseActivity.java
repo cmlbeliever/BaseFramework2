@@ -16,4 +16,10 @@ public class BaseActivity extends RxAppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    /**
+     * floatButton点击事件发送
+     */
+    public static class FloatClickEvent {
+    }
 }
