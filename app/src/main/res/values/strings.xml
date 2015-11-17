@@ -8,5 +8,5 @@
 
     <!-- fragment -->
     <!--listviewFragment-->
-    <string name="listview_text">我是listview</string>
+    <string name="listview_text">listview与RxJava整合，实现上拉加载更多与下拉请求网络功能</string>
 </resources>

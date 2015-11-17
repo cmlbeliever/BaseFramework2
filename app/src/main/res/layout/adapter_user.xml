@@ -2,17 +2,24 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              android:gravity="center_vertical"
               android:minHeight="30dp"
-              android:orientation="vertical">
+              android:orientation="horizontal">
 
     <TextView
         android:id="@+id/username"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"/>
+
+    <View
+        android:layout_width="50dp"
+        android:layout_height="match_parent"></View>
 
     <TextView
         android:id="@+id/password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"/>
 
 </LinearLayout>

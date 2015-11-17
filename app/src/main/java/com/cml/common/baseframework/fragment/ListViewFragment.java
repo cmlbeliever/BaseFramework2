@@ -2,7 +2,9 @@ package com.cml.common.baseframework.fragment;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import com.cml.common.baseframework.R;
 import com.cml.common.baseframework.db.model.UserModel;
@@ -44,5 +46,14 @@ public class ListViewFragment extends BaseFragment {
         ArrayAdapter<UserModel> adapter = new UserAdapter(getContext());
 
         new PullRefreshHelper(listview, adapter, pageModel, bindUntilEvent(FragmentEvent.STOP)).setUp(null);
+
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                UserModel userModel= (UserModel) parent.getItemAtPosition(position);
+                Toast.makeText(getContext(), "点击" + userModel.username, Toast.LENGTH_LONG).show();
+            }
+        });
     }
+
 }
