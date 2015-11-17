@@ -12,6 +12,9 @@ import com.cml.common.baseframework.model.PageModel;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.trello.rxlifecycle.FragmentEvent;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 /**
  *
  */
@@ -21,6 +24,9 @@ public class ListViewFragment extends BaseFragment {
 
     private PageModel pageModel;
 
+    @Bind(R.id.listview)
+    PullToRefreshListView listview;
+
     public ListViewFragment() {
 
     }
@@ -28,14 +34,14 @@ public class ListViewFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_list_view, container, false);
+        View view = inflater.inflate(R.layout.fragment_list_view, container, false);
+        ButterKnife.bind(this, view);
+        return view;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        PullToRefreshListView listView = (PullToRefreshListView) view.findViewById(R.id.listview);
 
         pageModel = new PageModel(1, 20);
 
@@ -43,7 +49,7 @@ public class ListViewFragment extends BaseFragment {
                 android.R.id.text1
         });
 
-        new PullRefreshHelper(listView, adapter, pageModel).setUp(null);
+        new PullRefreshHelper(listview, adapter, pageModel).setUp(null);
 
         bindUntilEvent(FragmentEvent.DESTROY);
     }
