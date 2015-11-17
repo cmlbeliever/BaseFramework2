@@ -5,10 +5,10 @@ package com.cml.common.baseframework.constant;
  * api访问常量信息
  */
 public interface ApiConstant {
-    String BASE_URL = "https://raw.githubusercontent.com/cmlbeliever/BaseFramework2/master/data.json";
+    String BASE_URL = "https://raw.githubusercontent.com/cmlbeliever/BaseFramework2/master/data/";
 
     interface Api {
-        String LOGIN = "login";
+        String LOGIN = "data.json";
         String INIT = "init";
     }
 }
