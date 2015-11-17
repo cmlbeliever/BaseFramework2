@@ -4,9 +4,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Toast;
 
 import com.cml.common.baseframework.R;
+import com.cml.common.baseframework.activity.UserInfoActivity;
 import com.cml.common.baseframework.db.model.UserModel;
 import com.cml.common.baseframework.fragment.adapter.UserAdapter;
 import com.cml.common.baseframework.helper.PullRefreshHelper;
@@ -50,8 +50,8 @@ public class ListViewFragment extends BaseFragment {
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                UserModel userModel= (UserModel) parent.getItemAtPosition(position);
-                Toast.makeText(getContext(), "点击" + userModel.username, Toast.LENGTH_LONG).show();
+                UserModel userModel = (UserModel) parent.getItemAtPosition(position);
+                UserInfoActivity.startActivity(getContext(),userModel.getId());
             }
         });
     }
