@@ -2,8 +2,10 @@ package com.cml.common.baseframework.helper;
 
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.activeandroid.Model;
+import com.cml.common.baseframework.MyApplication;
 import com.cml.common.baseframework.helper.model.PageModel;
 import com.cml.common.baseframework.util.AppUtil;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -37,15 +39,28 @@ public class PullRefreshHelper {
     private PullToRefreshBase.OnRefreshListener2 onRefreshListener = new PullToRefreshBase.OnRefreshListener2<ListView>() {
         @Override
         public void onPullDownToRefresh(final PullToRefreshBase<ListView> refreshView) {
-            pageModel.loadFromApi(transformer).doOnNext(new Action1<Boolean>() {
+            pageModel.loadFromApi(transformer).doOnError(new Action1<Throwable>() {
+                @Override
+                public void call(Throwable throwable) {
+                    Toast.makeText(MyApplication.getContext(), "出错了，网络加载失败", Toast.LENGTH_LONG).show();
+                }
+            }).onErrorResumeNext(Observable.just(false)).doOnNext(new Action1<Boolean>() {
                 @Override
                 public void call(Boolean hasData) {
+                    Toast.makeText(MyApplication.getContext(), "返回数据：hasData:"+hasData, Toast.LENGTH_LONG).show();
                     //有数据变化，重新加载listview数据
                     if (hasData) {
+                        //服务器返回的数据处理完毕后，
+                        //1、清空数据，重新加载本地数据
+                        // 加载数据、
+                        pageModel.reset();
+                        adapter.clear();
                         loadLocalData();
+                    } else {
+                        refreshCompleted();
                     }
                 }
-            }).subscribe();
+            }).compose(transformer).subscribe();
             //插入db数据结束后关闭加载效果
 //            Observable<Integer> serverDataObserver = pageModel.insertPageData();
 //            serverDataObserver.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).doOnCompleted(new Action0() {
