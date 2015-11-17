@@ -2,15 +2,22 @@ package com.cml.common.baseframework.helper.model;
 
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.query.Select;
+import com.cml.common.baseframework.api.ApiManager;
+import com.cml.common.baseframework.api.model.UserApiResponse;
 import com.cml.common.baseframework.db.model.UserModel;
+import com.socks.library.KLog;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 
 /**
  * Created by cmlBeliever on 2015/11/17.
  */
 public class UserPageModel extends PageModel {
+
+    public static final String TAG = UserPageModel.class.getSimpleName();
 
     public UserPageModel(int pageSize, int currentPage) {
         super(pageSize, currentPage, UserModel.class);
@@ -24,7 +31,7 @@ public class UserPageModel extends PageModel {
      */
     public int insertPageUsers(int randomSeek) {
 
-        int size = (int) (Math.random() * randomSeek*10 + 1);
+        int size = (int) (Math.random() * randomSeek * 10 + 1);
 
         if (size < 1) {
             size = 1;
@@ -49,6 +56,22 @@ public class UserPageModel extends PageModel {
             ActiveAndroid.endTransaction();
         }
         return size;
+    }
+
+    @Override
+    public Observable loadFromApi(Observable.Transformer lifecycler) {
+        Observable<UserApiResponse> userApiResponseObservable = ApiManager.getApiService().getUsers();
+        return userApiResponseObservable.flatMap(new Func1<UserApiResponse, Observable<Boolean>>() {
+            @Override
+            public Observable<Boolean> call(UserApiResponse userApiResponse) {
+                // 差分更新DB数据
+                int affectRows = UserModel.insertOrUpdate(userApiResponse.getUsers());
+                boolean hasDataChange = affectRows > 0;
+                KLog.i(TAG, "api request callback==(map)===>" + userApiResponse + ",has data changed : " + hasDataChange + "," + ",threadId:" + Thread.currentThread().getId());
+
+                return Observable.just(hasDataChange);
+            }
+        }).compose(lifecycler).observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override

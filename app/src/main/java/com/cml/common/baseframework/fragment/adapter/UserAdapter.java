@@ -5,8 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.cml.common.baseframework.R;
 import com.cml.common.baseframework.db.model.UserModel;
 
@@ -40,6 +42,9 @@ public class UserAdapter extends ArrayAdapter<UserModel> {
         holder.usernameView.setText(userModel.username);
         holder.passwrodView.setText(userModel.password);
 
+        //加载网络图片
+        Glide.with(getContext()).load(userModel.headIcon).crossFade().into(holder.headIcon);
+
         return convertView;
     }
 
@@ -48,9 +53,12 @@ public class UserAdapter extends ArrayAdapter<UserModel> {
         TextView usernameView;
         @Bind(R.id.password)
         TextView passwrodView;
+        @Bind(R.id.headIcon)
+        ImageView headIcon;
 
         public ViewHolder(View view) {
             ButterKnife.bind(this, view);
         }
     }
+
 }

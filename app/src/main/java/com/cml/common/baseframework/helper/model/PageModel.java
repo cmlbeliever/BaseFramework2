@@ -38,14 +38,6 @@ public abstract class PageModel {
     }
 
     public Observable<? extends List<? extends Model>> getPageData() {
-
-//        Observable.just(this).flatMap(new Func1<PageModel, Observable<List<UserModel>>>() {
-//            @Override
-//            public Observable<List<UserModel>> call(PageModel pageModel) {
-//                return null;
-//            }
-//        });
-
         return Observable.create(new Observable.OnSubscribe<List<UserModel>>() {
             @Override
             public void call(Subscriber<? super List<UserModel>> subscriber) {
@@ -56,6 +48,8 @@ public abstract class PageModel {
             }
         });
     }
+
+    public abstract Observable loadFromApi(Observable.Transformer lifecycler);
 
     public abstract Observable<Integer> insertPageData();
 }

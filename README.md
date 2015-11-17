@@ -14,3 +14,4 @@
     4、butterknife   https://github.com/JakeWharton/butterknife 注解方式依赖注入，极大减少代码数量 <br/>
     5、EventBus https://github.com/greenrobot/EventBus 完成组件间的通信功能 <br/>
     6、ActiveAndroid https://github.com/pardom/ActiveAndroid  以对象的方式操作DB <br/>
+    7、Glide https://github.com/bumptech/glide 图片操作

@@ -1,4 +1,4 @@
-package com.cml.common.baseframework.api.client;
+package com.cml.common.baseframework.api;
 
 import retrofit.RestAdapter;
 
@@ -8,6 +8,7 @@ import retrofit.RestAdapter;
 public class ApiManager {
 
     private static RestAdapter adapter;
+    private static ApiService apiService;
 
     public static void init(String baseUrl, RestAdapter.LogLevel logLevel) {
         if (null == adapter) {
@@ -17,5 +18,12 @@ public class ApiManager {
 
     public static <T> T createService(Class<T> target) {
         return adapter.create(target);
+    }
+
+    public static ApiService getApiService() {
+        if (null != apiService) {
+            return apiService;
+        }
+        return adapter.create(ApiService.class);
     }
 }

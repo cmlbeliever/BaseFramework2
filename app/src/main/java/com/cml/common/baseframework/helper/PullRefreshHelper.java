@@ -37,19 +37,28 @@ public class PullRefreshHelper {
     private PullToRefreshBase.OnRefreshListener2 onRefreshListener = new PullToRefreshBase.OnRefreshListener2<ListView>() {
         @Override
         public void onPullDownToRefresh(final PullToRefreshBase<ListView> refreshView) {
-            //插入db数据结束后关闭加载效果
-            Observable<Integer> serverDataObserver = pageModel.insertPageData();
-            serverDataObserver.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).doOnCompleted(new Action0() {
+            pageModel.loadFromApi(transformer).doOnNext(new Action1<Boolean>() {
                 @Override
-                public void call() {
-                    //服务器返回的数据处理完毕后，
-                    //1、清空数据，重新加载本地数据
-                    // 加载数据、
-                    pageModel.reset();
-                    adapter.clear();
-                    loadLocalData();
+                public void call(Boolean hasData) {
+                    //有数据变化，重新加载listview数据
+                    if (hasData) {
+                        loadLocalData();
+                    }
                 }
-            }).compose(transformer).subscribe();
+            }).subscribe();
+            //插入db数据结束后关闭加载效果
+//            Observable<Integer> serverDataObserver = pageModel.insertPageData();
+//            serverDataObserver.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).doOnCompleted(new Action0() {
+//                @Override
+//                public void call() {
+//                    //服务器返回的数据处理完毕后，
+//                    //1、清空数据，重新加载本地数据
+//                    // 加载数据、
+//                    pageModel.reset();
+//                    adapter.clear();
+//                    loadLocalData();
+//                }
+//            }).compose(transformer).subscribe();
         }
 
         @Override

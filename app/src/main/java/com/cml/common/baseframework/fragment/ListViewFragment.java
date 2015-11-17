@@ -22,6 +22,7 @@ import butterknife.Bind;
  */
 public class ListViewFragment extends BaseFragment {
 
+    private static final String TAG = ListViewFragment.class.getSimpleName();
     private static final int PageSize = 20;
 
     private UserPageModel pageModel;
@@ -55,6 +56,7 @@ public class ListViewFragment extends BaseFragment {
                 UserInfoActivity.startActivity(getContext(), userModel.getId());
             }
         });
+
     }
 
     /**

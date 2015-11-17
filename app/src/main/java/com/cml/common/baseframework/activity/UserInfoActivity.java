@@ -8,9 +8,11 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.cml.common.baseframework.R;
 import com.cml.common.baseframework.db.model.UserModel;
 import com.socks.library.KLog;
@@ -34,6 +36,9 @@ public class UserInfoActivity extends BaseActivity {
 
     @Bind(R.id.userinfo)
     TextView userinfoView;
+
+    @Bind(R.id.toolbar_img)
+    ImageView toolbarImg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +66,7 @@ public class UserInfoActivity extends BaseActivity {
                 if (null != userModel) {
                     coordinatorLayout.setTitle(userModel.username);
                     userinfoView.setText("username:" + userModel.username + "\n password:" + userModel.password);
+                    Glide.with(UserInfoActivity.this).load(userModel.headIcon).centerCrop().crossFade().into(toolbarImg);
                 } else {
                     Toast.makeText(getApplicationContext(), "该用户不存在！", Toast.LENGTH_LONG).show();
                 }
