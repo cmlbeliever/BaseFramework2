@@ -15,3 +15,9 @@
     5、EventBus https://github.com/greenrobot/EventBus 完成组件间的通信功能 <br/>
     6、ActiveAndroid https://github.com/pardom/ActiveAndroid  以对象的方式操作DB <br/>
     7、Glide https://github.com/bumptech/glide 图片操作
+
+# 待研究
+    1、Glide 高级用法，自定义信息
+    2、ActivieAndroid 预导入数据和DB升级处理
+    3、Retrofit 升级到2.0，api变化升级
+    4、整合Volley功能
