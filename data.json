@@ -1,8 +1,0 @@
-{
-  result:200,
-  message:"返回成功"
-  users:[
-    {username:"张三",password:"李四pass"},
-    {username:"李四",password:"李四pass"},
-  ]
-}
