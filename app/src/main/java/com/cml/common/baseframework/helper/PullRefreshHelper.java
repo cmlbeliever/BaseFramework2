@@ -36,6 +36,7 @@ public class PullRefreshHelper {
     private PullToRefreshBase.OnRefreshListener2 onRefreshListener = new PullToRefreshBase.OnRefreshListener2<ListView>() {
         @Override
         public void onPullDownToRefresh(final PullToRefreshBase<ListView> refreshView) {
+            Toast.makeText(MyApplication.getContext(), "onPullDownToRefresh", Toast.LENGTH_LONG).show();
             pageModel.loadFromApi(transformer).subscribe(new Observer<Boolean>() {
                 @Override
                 public void onCompleted() {
@@ -66,6 +67,7 @@ public class PullRefreshHelper {
 
         @Override
         public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
+            Toast.makeText(MyApplication.getContext(), "onPullUpToRefresh", Toast.LENGTH_LONG).show();
             // 加载更多数据
             pageModel.nextPage();
             loadLocalData();
