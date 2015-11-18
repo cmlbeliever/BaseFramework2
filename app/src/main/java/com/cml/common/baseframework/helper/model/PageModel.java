@@ -49,7 +49,7 @@ public abstract class PageModel {
         });
     }
 
-    public abstract Observable loadFromApi(Observable.Transformer lifecycler);
+    public abstract Observable<Boolean> loadFromApi(Observable.Transformer lifecycler);
 
     public abstract Observable<Integer> insertPageData();
 }

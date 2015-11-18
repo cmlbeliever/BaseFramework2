@@ -15,6 +15,7 @@ import com.socks.library.KLog;
 import java.util.List;
 
 import rx.Observable;
+import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
@@ -39,15 +40,21 @@ public class PullRefreshHelper {
     private PullToRefreshBase.OnRefreshListener2 onRefreshListener = new PullToRefreshBase.OnRefreshListener2<ListView>() {
         @Override
         public void onPullDownToRefresh(final PullToRefreshBase<ListView> refreshView) {
-            pageModel.loadFromApi(transformer).doOnError(new Action1<Throwable>() {
+            pageModel.loadFromApi(transformer).subscribe(new Observer<Boolean>() {
                 @Override
-                public void call(Throwable throwable) {
-                    Toast.makeText(MyApplication.getContext(), "出错了，网络加载失败", Toast.LENGTH_LONG).show();
+                public void onCompleted() {
+                    refreshCompleted();
                 }
-            }).onErrorResumeNext(Observable.just(false)).doOnNext(new Action1<Boolean>() {
+
                 @Override
-                public void call(Boolean hasData) {
-                    Toast.makeText(MyApplication.getContext(), "返回数据：hasData:"+hasData, Toast.LENGTH_LONG).show();
+                public void onError(Throwable e) {
+                    Toast.makeText(MyApplication.getContext(), "出错了，网络加载失败", Toast.LENGTH_LONG).show();
+                    refreshCompleted();
+                }
+
+                @Override
+                public void onNext(Boolean hasData) {
+                    Toast.makeText(MyApplication.getContext(), "返回数据：hasData:" + hasData, Toast.LENGTH_LONG).show();
                     //有数据变化，重新加载listview数据
                     if (hasData) {
                         //服务器返回的数据处理完毕后，
@@ -56,24 +63,9 @@ public class PullRefreshHelper {
                         pageModel.reset();
                         adapter.clear();
                         loadLocalData();
-                    } else {
-                        refreshCompleted();
                     }
                 }
-            }).compose(transformer).subscribe();
-            //插入db数据结束后关闭加载效果
-//            Observable<Integer> serverDataObserver = pageModel.insertPageData();
-//            serverDataObserver.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).doOnCompleted(new Action0() {
-//                @Override
-//                public void call() {
-//                    //服务器返回的数据处理完毕后，
-//                    //1、清空数据，重新加载本地数据
-//                    // 加载数据、
-//                    pageModel.reset();
-//                    adapter.clear();
-//                    loadLocalData();
-//                }
-//            }).compose(transformer).subscribe();
+            });
         }
 
         @Override
