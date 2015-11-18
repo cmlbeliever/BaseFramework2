@@ -45,6 +45,7 @@ public class PullRefreshHelper {
 
                 @Override
                 public void onError(Throwable e) {
+                    e.printStackTrace();
                     Toast.makeText(MyApplication.getContext(), "出错了，网络加载失败", Toast.LENGTH_LONG).show();
                     refreshCompleted();
                 }

@@ -88,7 +88,7 @@ public class UserPageModel extends PageModel {
 
                 return Observable.just(hasDataChange);
             }
-        }).compose(lifecycler).observeOn(AndroidSchedulers.mainThread());
+        }).compose(lifecycler).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override

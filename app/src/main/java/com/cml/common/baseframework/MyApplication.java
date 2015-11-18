@@ -8,8 +8,6 @@ import com.cml.common.baseframework.api.ApiManager;
 import com.cml.common.baseframework.constant.ApiConstant;
 import com.socks.library.KLog;
 
-import retrofit.RestAdapter;
-
 /**
  * Created by cmlBeliever on 2015/11/17.
  */
@@ -24,7 +22,7 @@ public class MyApplication extends Application {
         context = getApplicationContext();
 
         ActiveAndroid.initialize(getApplicationContext());
-        ApiManager.init(ApiConstant.BASE_URL, RestAdapter.LogLevel.FULL);
+        ApiManager.init(ApiConstant.BASE_URL);
 
         KLog.init(true);
         KLog.i(TAG, "application init success===>");
