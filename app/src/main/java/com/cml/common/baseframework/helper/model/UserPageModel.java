@@ -77,7 +77,7 @@ public class UserPageModel extends PageModel {
 
     @Override
     public Observable loadFromApi(Observable.Transformer lifecycler) {
-        Observable<UserApiResponse> userApiResponseObservable = ApiManager.getApiService().getUsers();
+        Observable<UserApiResponse> userApiResponseObservable = ApiManager.getApiService().getUsers("name");
         return userApiResponseObservable.flatMap(new Func1<UserApiResponse, Observable<Boolean>>() {
             @Override
             public Observable<Boolean> call(UserApiResponse userApiResponse) {

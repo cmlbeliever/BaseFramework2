@@ -6,9 +6,10 @@ package com.cml.common.baseframework.constant;
  */
 public interface ApiConstant {
     String BASE_URL = "https://raw.githubusercontent.com/cmlbeliever/BaseFramework2/master/data/";
+    int DEFAULT_TIME_OUT = 5;
 
     interface Api {
-        String USER="user.json";
+        String USER = "user.json";
         String LOGIN = "/data.json";
         String INIT = "/init";
     }

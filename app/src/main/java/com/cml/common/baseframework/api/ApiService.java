@@ -3,7 +3,9 @@ package com.cml.common.baseframework.api;
 import com.cml.common.baseframework.api.model.UserApiResponse;
 import com.cml.common.baseframework.constant.ApiConstant;
 
-import retrofit.http.GET;
+import retrofit.http.Field;
+import retrofit.http.FormUrlEncoded;
+import retrofit.http.POST;
 import rx.Observable;
 
 /**
@@ -12,6 +14,7 @@ import rx.Observable;
  */
 public interface ApiService {
 
-    @GET(ApiConstant.Api.USER)
-    Observable<UserApiResponse> getUsers();
+    @POST(ApiConstant.Api.USER)
+    @FormUrlEncoded
+    Observable<UserApiResponse> getUsers(@Field("name") String name);
 }
