@@ -8,7 +8,7 @@ import android.widget.ArrayAdapter;
 import com.cml.common.baseframework.R;
 import com.cml.common.baseframework.activity.BaseActivity;
 import com.cml.common.baseframework.activity.UserInfoActivity;
-import com.cml.common.baseframework.api.UserApiService;
+import com.cml.common.baseframework.api.volley.service.VolleyUserApiService;
 import com.cml.common.baseframework.db.model.UserModel;
 import com.cml.common.baseframework.fragment.adapter.UserAdapter;
 import com.cml.common.baseframework.helper.CommonTransformer;
@@ -78,6 +78,9 @@ public class ListViewFragment extends BaseFragment implements OnPullListener {
 
     @Override
     public Observable<Boolean> onPull() {
-        return UserApiService.getUsers(new CommonTransformer<Boolean>(transformer));
+        //TODO 使用Retrofit方式请求数据
+//        return UserApiService.getUsers(new CommonTransformer<Boolean>(transformer));
+        //TODO 使用Volley方式请求数据
+        return VolleyUserApiService.getUsers(new CommonTransformer<Boolean>(transformer));
     }
 }
