@@ -12,9 +12,7 @@ import com.socks.library.KLog;
 import java.util.Map;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * 返回请求的Observable对象
@@ -41,7 +39,7 @@ public class RxRequest<T> {
                 }
                 return null;
             }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+        });
     }
 
     private RequestFuture<String> getRequestFuture(final String url, int method, final Map<String, String> params) {

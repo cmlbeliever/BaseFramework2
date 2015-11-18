@@ -10,7 +10,9 @@ import com.socks.library.KLog;
 import java.util.Map;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by cmlBeliever on 2015/11/18.
@@ -47,6 +49,6 @@ public class VolleyUserApiService extends ApiService {
 
                 return hasDataChange;
             }
-        }).compose(lifecycler);
+        }).compose(lifecycler).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 }
