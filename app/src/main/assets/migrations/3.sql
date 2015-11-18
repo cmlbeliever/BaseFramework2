@@ -1,0 +1,1 @@
+INSERT INTO T_USER (username,password,headIcon) VALUES ('username-sql3','password-sql3','http://img0.bdstatic.com/img/image/shouye/chongwu1117.jpg');

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.cml.common.baseframework"
-          xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest
+    package="com.cml.common.baseframework"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:versionCode="2">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -18,6 +20,10 @@
         <meta-data
             android:name="AA_DB_NAME"
             android:value="mydemo.db"/>
+
+        <meta-data
+            android:name="AA_DB_VERSION"
+            android:value="3"/>
 
         <!--整合okhttp与glide-->
         <meta-data
