@@ -5,7 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/BaseFramework.iml" filepath="$PROJECT_DIR$/BaseFramework.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/dumydata/dumydata.iml" filepath="$PROJECT_DIR$/dumydata/dumydata.iml" />
-      <module fileurl="file://$PROJECT_DIR$/library/library.iml" filepath="$PROJECT_DIR$/library/library.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pulltorefresh/refresh-listview.iml" filepath="$PROJECT_DIR$/pulltorefresh/refresh-listview.iml" />
     </modules>
   </component>
 </project>
