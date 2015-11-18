@@ -16,10 +16,6 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Observer;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by cmlBeliever on 2015/11/16.
@@ -80,18 +76,9 @@ public class PullRefreshHelper {
      * 加载本地数据
      */
     private void loadLocalData() {
-        pageModel.getPageData().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).doOnNext(new Action1<List<? extends Model>>() {
+        pageModel.getPageData().compose(new CommonTransformer<List<? extends Model>>(transformer)).subscribe(new Observer<List<? extends Model>>() {
             @Override
-            public void call(List models) {
-                KLog.d(TAG, "---doOnSubscribe--->获取本地数据长度，数据长度：" + (models == null ? 0 : models.size()) + ",threadID:" + Thread.currentThread().getId());
-                if (null != models) {
-                    adapter.addAll(models);
-                    adapter.notifyDataSetChanged();
-                }
-            }
-        }).doOnCompleted(new Action0() {
-            @Override
-            public void call() {
+            public void onCompleted() {
                 refreshCompleted();
                 //没有更多数据了
                 if (adapter.getCount() % pageModel.pageSize != 0) {
@@ -100,7 +87,21 @@ public class PullRefreshHelper {
                     listView.setMode(PullToRefreshBase.Mode.BOTH);
                 }
             }
-        }).compose(transformer).subscribe();
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(List models) {
+                KLog.d(TAG, "---doOnSubscribe--->获取本地数据长度，数据长度：" + (models == null ? 0 : models.size()) + ",threadID:" + Thread.currentThread().getId());
+                if (null != models) {
+                    adapter.addAll(models);
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        });
     }
 
     public PullRefreshHelper(PullToRefreshListView listView, ArrayAdapter adapter, PageModel pageModel, Observable.Transformer<Object, Object> transformer) {
