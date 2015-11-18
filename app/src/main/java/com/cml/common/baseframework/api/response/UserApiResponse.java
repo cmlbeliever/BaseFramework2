@@ -1,4 +1,4 @@
-package com.cml.common.baseframework.api.model;
+package com.cml.common.baseframework.api.response;
 
 import com.cml.common.baseframework.db.model.UserModel;
 

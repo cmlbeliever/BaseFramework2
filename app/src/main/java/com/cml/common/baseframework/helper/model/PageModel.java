@@ -40,8 +40,4 @@ public abstract class PageModel {
      * @return
      */
     public abstract Observable<? extends List<? extends Model>> getPageData();
-
-    public abstract Observable<Boolean> loadFromApi(Observable.Transformer lifecycler);
-
-    public abstract Observable<Integer> insertPageData();
 }

@@ -29,6 +29,7 @@ public class PullRefreshHelper {
     private ArrayAdapter<? extends Model> adapter;
     private PageModel pageModel;
     private Observable.Transformer<Object, Object> transformer;//绑定请求的生命周期
+    private OnPullListener onPullListener;
 
     /**
      * 用户下拉与上拉事件监听，完成数据加载与导入
@@ -37,33 +38,35 @@ public class PullRefreshHelper {
         @Override
         public void onPullDownToRefresh(final PullToRefreshBase<ListView> refreshView) {
             Toast.makeText(MyApplication.getContext(), "onPullDownToRefresh", Toast.LENGTH_LONG).show();
-            pageModel.loadFromApi(transformer).subscribe(new Observer<Boolean>() {
-                @Override
-                public void onCompleted() {
-                    refreshCompleted();
-                }
-
-                @Override
-                public void onError(Throwable e) {
-                    e.printStackTrace();
-                    Toast.makeText(MyApplication.getContext(), "出错了，网络加载失败", Toast.LENGTH_LONG).show();
-                    refreshCompleted();
-                }
-
-                @Override
-                public void onNext(Boolean hasData) {
-                    Toast.makeText(MyApplication.getContext(), "返回数据：hasData:" + hasData, Toast.LENGTH_LONG).show();
-                    //有数据变化，重新加载listview数据
-                    if (hasData) {
-                        //服务器返回的数据处理完毕后，
-                        //1、清空数据，重新加载本地数据
-                        // 加载数据、
-                        pageModel.reset();
-                        adapter.clear();
-                        loadLocalData();
+            if (null != onPullListener) {
+                onPullListener.onPull().subscribe(new Observer<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+                        refreshCompleted();
                     }
-                }
-            });
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        Toast.makeText(MyApplication.getContext(), "出错了，网络加载失败", Toast.LENGTH_LONG).show();
+                        refreshCompleted();
+                    }
+
+                    @Override
+                    public void onNext(Boolean hasData) {
+                        Toast.makeText(MyApplication.getContext(), "返回数据：hasData:" + hasData, Toast.LENGTH_LONG).show();
+                        //有数据变化，重新加载listview数据
+                        if (hasData) {
+                            //服务器返回的数据处理完毕后，
+                            //1、清空数据，重新加载本地数据
+                            // 加载数据、
+                            pageModel.reset();
+                            adapter.clear();
+                            loadLocalData();
+                        }
+                    }
+                });
+            }
         }
 
         @Override
@@ -107,11 +110,12 @@ public class PullRefreshHelper {
         });
     }
 
-    public PullRefreshHelper(PullToRefreshListView listView, ArrayAdapter adapter, PageModel pageModel, Observable.Transformer<Object, Object> transformer) {
+    public PullRefreshHelper(PullToRefreshListView listView, ArrayAdapter adapter, PageModel pageModel, Observable.Transformer<Object, Object> transformer, OnPullListener onPullListener) {
         this.listView = listView;
         this.adapter = adapter;
         this.pageModel = pageModel;
         this.transformer = transformer;
+        this.onPullListener = onPullListener;
     }
 
     /**
@@ -147,5 +151,14 @@ public class PullRefreshHelper {
         if (listView.isRefreshing()) {
             listView.onRefreshComplete();
         }
+    }
+
+    public interface OnPullListener {
+        /**
+         * listview下拉回调事件
+         *
+         * @return
+         */
+        Observable<Boolean> onPull();
     }
 }

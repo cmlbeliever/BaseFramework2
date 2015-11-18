@@ -1,4 +1,4 @@
-package com.cml.common.baseframework.api.model;
+package com.cml.common.baseframework.api.response;
 
 /**
  * Created by cmlBeliever on 2015/11/17.

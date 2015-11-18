@@ -1,6 +1,6 @@
 package com.cml.common.baseframework.api;
 
-import com.cml.common.baseframework.api.model.UserApiResponse;
+import com.cml.common.baseframework.api.response.UserApiResponse;
 import com.cml.common.baseframework.constant.ApiConstant;
 
 import retrofit.http.Field;

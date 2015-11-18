@@ -8,27 +8,31 @@ import android.widget.ArrayAdapter;
 import com.cml.common.baseframework.R;
 import com.cml.common.baseframework.activity.BaseActivity;
 import com.cml.common.baseframework.activity.UserInfoActivity;
+import com.cml.common.baseframework.api.UserApiService;
 import com.cml.common.baseframework.db.model.UserModel;
 import com.cml.common.baseframework.fragment.adapter.UserAdapter;
+import com.cml.common.baseframework.helper.CommonTransformer;
 import com.cml.common.baseframework.helper.PullRefreshHelper;
+import com.cml.common.baseframework.helper.PullRefreshHelper.OnPullListener;
 import com.cml.common.baseframework.helper.model.UserPageModel;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.trello.rxlifecycle.FragmentEvent;
 
 import butterknife.Bind;
+import rx.Observable;
 
 /**
  *
  */
-public class ListViewFragment extends BaseFragment {
+public class ListViewFragment extends BaseFragment implements OnPullListener {
 
     private static final String TAG = ListViewFragment.class.getSimpleName();
     private static final int PageSize = 20;
 
-    private UserPageModel pageModel;
-
     @Bind(R.id.listview)
     PullToRefreshListView listview;
+
+    private Observable.Transformer transformer;
 
     public ListViewFragment() {
 
@@ -43,11 +47,12 @@ public class ListViewFragment extends BaseFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        pageModel = new UserPageModel(20, 1);
-
+        UserPageModel pageModel = new UserPageModel(PageSize, 1);
         ArrayAdapter<UserModel> adapter = new UserAdapter(getContext());
 
-        new PullRefreshHelper(listview, adapter, pageModel, bindUntilEvent(FragmentEvent.STOP)).setUp(null);
+        transformer = bindUntilEvent(FragmentEvent.DESTROY);
+
+        new PullRefreshHelper(listview, adapter, pageModel, transformer, this).setUp(null);
 
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -69,5 +74,10 @@ public class ListViewFragment extends BaseFragment {
         if (!listview.isRefreshing()) {
             listview.setRefreshing();
         }
+    }
+
+    @Override
+    public Observable<Boolean> onPull() {
+        return UserApiService.getUsers(new CommonTransformer<Boolean>(transformer));
     }
 }
